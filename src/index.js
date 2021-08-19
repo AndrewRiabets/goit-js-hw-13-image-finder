@@ -15,18 +15,16 @@ function onSearch(e) {
             if (e.status === 404) {
                 error({ text: 'ERROR! Please, check if the country name is entered correctly' });
             } else renderQueryResult(e);
-            })
+        })
+        .catch(error => console.log(error))
 }
 
 function renderQueryResult(country) {
     if (country.length > 10) {
-        console.log('1')
         manyMatchesFoundError(country);
     } if (country.length === 1) {
-        console.log('2');
         renderCountryCard(country);
     } if (country.length > 1 && country.length <= 10) {
-        console.log('3');
       renderCountryList(country);
     }
 }
