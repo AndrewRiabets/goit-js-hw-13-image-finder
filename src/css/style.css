@@ -1,4 +1,8 @@
-.list{
+body {
+  background-color: #ffefd5;
+}
+
+.list {
   list-style: none;
 }
 
@@ -50,9 +54,9 @@
   margin-left: -40px;
 }
 
-.card-language-list--items{
-    margin-left: 90px;
-    margin-top: -18px;
+.card-language-list--items {
+  margin-left: 90px;
+  margin-top: -18px;
 }
 
 .icon-list {
@@ -60,6 +64,8 @@
   align-items: center;
 }
 
-.list-item{
+.list-item {
   margin-left: 5px;
 }
+
+
