@@ -1,44 +1,49 @@
-import countryCardTpl from './tamplates/country-cards.hbs';
-import countryListTpl from './tamplates/country-list.hbs';
-import API from './fetchCountries';
+import picturesCardTpl from './tamplates/pictures-cards.hbs';
+import PictureApiService from './apiService';
 import getRefs from './get-refs';
 import { error } from '../node_modules/@pnotify/core/dist/PNotify.js';
 
 const refs = getRefs();
-refs.searchForm.addEventListener('input', _.debounce(onSearch, 500));
+
+const pictureApiService = new PictureApiService();
+
+console.log(pictureApiService);
+
+refs.searchForm.addEventListener('input', _.debounce(onSearch, 1000));
+refs.showMoreBtn.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
-    const countryName = e.target.value;
-
-    API.fetchCountryByName(countryName)
-        .then(e => {
-            if (e.status === 404) {
-                error({ text: 'ERROR! Please, check if the country name is entered correctly' });
-            } else renderQueryResult(e);
-        })
-        .catch(error => console.log(error))
-}
-
-function renderQueryResult(country) {
-    if (country.length > 10) {
-        manyMatchesFoundError(country);
-    } if (country.length === 1) {
-        renderCountryCard(country);
-    } if (country.length > 1 && country.length <= 10) {
-      renderCountryList(country);
+  pictureApiService.query = e.target.value;
+  clearGallery();
+  pictureApiService.resetPage();
+  pictureApiService.fetchArticles().then(e => {
+    console.log(e);
+    if (e.length === 0) {
+      error({ text: 'ERROR! Please, check if the picture keyword is entered correctly' });
+    } else {
+      appendArticlesMurkup(e);
     }
+  });
+  visibleShowMoreBTN();
 }
 
-function manyMatchesFoundError() {
-  return error({ text: 'ERROR! To many matches found. Please enter a more specific query' });
+async function onLoadMore() {
+  pictureApiService.fetchArticles().then(appendArticlesMurkup);
 }
 
-function renderCountryCard(country) {
-  const markup = countryCardTpl(...country);
-  refs.cardContainer.innerHTML = markup;
+function appendArticlesMurkup(hits) {
+  refs.galleryRef.insertAdjacentHTML('beforeend', picturesCardTpl(hits));
+  onScroll();
 }
 
-function renderCountryList(country) {
-  const markupList = countryListTpl(country);
-  refs.cardContainer.innerHTML = markupList;
+function clearGallery() {
+  refs.galleryRef.innerHTML = '';
+}
+
+function onScroll() {
+  refs.galleryRef.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+function visibleShowMoreBTN() {
+  refs.showMoreBtn.classList.remove('is-hidden');
 }
