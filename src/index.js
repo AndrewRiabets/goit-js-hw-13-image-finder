@@ -24,7 +24,6 @@ function onSearch(e) {
       appendArticlesMurkup(e);
     }
   });
-  visibleShowMoreBTN();
 }
 
 async function onLoadMore() {
@@ -34,6 +33,7 @@ async function onLoadMore() {
 function appendArticlesMurkup(hits) {
   refs.galleryRef.insertAdjacentHTML('beforeend', picturesCardTpl(hits));
   onScroll();
+  visibleShowMoreBTN();
 }
 
 function clearGallery() {
